@@ -73,6 +73,7 @@ export const ui = {
     'breadcrumb.label': 'Breadcrumb',
     'article.related': 'Related articles',
     'article.published': 'Published',
+    'page.updated': 'Last updated',
     'articles.title': 'All articles',
     'articles.description':
       'Plain-language explainers on science, space, technology, nature, the human body, facts and money.',
@@ -142,6 +143,7 @@ export const ui = {
     'breadcrumb.label': 'பக்கப் பாதை',
     'article.related': 'தொடர்புடைய கட்டுரைகள்',
     'article.published': 'வெளியான நாள்',
+    'page.updated': 'கடைசியாகப் புதுப்பிக்கப்பட்டது',
     'articles.title': 'அனைத்துக் கட்டுரைகளும்',
     'articles.description':
       'அறிவியல், விண்வெளி, தொழில்நுட்பம், இயற்கை, மனித உடல், சுவாரஸ்யத் தகவல்கள், பணம் ஆகியவற்றைப் பற்றிய எளிய மொழி விளக்கங்கள்.',

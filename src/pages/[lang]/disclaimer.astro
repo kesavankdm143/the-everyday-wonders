@@ -1,0 +1,13 @@
+---
+// /en/disclaimer/ and /ta/disclaimer/ — the wording is in src/data/pages.ts.
+import InfoPage from '../../components/InfoPage.astro';
+import { languages, type Lang } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as Lang[]).map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props;
+---
+
+<InfoPage lang={lang} page="disclaimer" />

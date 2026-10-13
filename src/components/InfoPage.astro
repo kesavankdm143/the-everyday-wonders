@@ -3,7 +3,7 @@
 // in src/data/pages.ts; this only lays it out.
 import PageFrame from './PageFrame.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
-import { infoPages, pagesUpdated, type PageKey } from '../data/pages';
+import { infoPages, pagesUpdated, contactEmail, type PageKey } from '../data/pages';
 import { type Lang, useTranslations, otherLang, formatDate } from '../i18n/ui';
 
 interface Props {
@@ -45,6 +45,10 @@ const updated = new Date(pagesUpdated);
             <h2>{b.text[lang]}</h2>
           ) : b.type === 'p' ? (
             <p>{b.text[lang]}</p>
+          ) : b.type === 'email' ? (
+            <p class="email">
+              {b.label[lang]}: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+            </p>
           ) : (
             <ul>
               {b.items.map((item) => (
@@ -99,6 +103,15 @@ const updated = new Date(pagesUpdated);
     font-size: 1.3rem;
     font-weight: 700;
     line-height: 1.35;
+  }
+  .prose :global(.email) {
+    font-size: 1.15rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .prose :global(.email a) {
+    color: var(--blue);
+    text-decoration: underline;
   }
   .prose :global(ul) {
     margin: 0 0 1.2em;

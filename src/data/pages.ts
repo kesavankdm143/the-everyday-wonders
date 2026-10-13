@@ -6,13 +6,17 @@ import type { Bi } from './home';
 
 export type PageKey = 'about' | 'contact' | 'privacy-policy' | 'disclaimer';
 
+/** The public contact address, shown on the Contact page. */
+export const contactEmail = 'k7taacstudios@gmail.com';
+
 /** The day the page text was last changed (YYYY-MM-DD). */
 export const pagesUpdated = '2026-10-13';
 
 type Block =
   | { type: 'h2'; text: Bi }
   | { type: 'p'; text: Bi }
-  | { type: 'ul'; items: Bi[] };
+  | { type: 'ul'; items: Bi[] }
+  | { type: 'email'; label: Bi };
 
 export interface InfoPageData {
   title: Bi;
@@ -73,29 +77,37 @@ export const infoPages: Record<PageKey, InfoPageData> = {
   contact: {
     title: { en: 'Contact', ta: 'தொடர்புக்கு' },
     description: {
-      en: 'How to get in touch with The Everyday Wonders.',
-      ta: 'The Everyday Wonders-ஐத் தொடர்புகொள்வது எப்படி.',
+      en: 'How to get in touch with The Everyday Wonders by email.',
+      ta: 'The Everyday Wonders-ஐ மின்னஞ்சல் மூலம் தொடர்புகொள்வது எப்படி.',
     },
     blocks: [
       p(
-        'We do not yet have a public contact address, and this page does not list one on purpose. We would rather say so than show a way of reaching us that does not work.',
-        'எங்களிடம் இன்னும் பொது தொடர்பு முகவரி இல்லை; அதனால் இந்தப் பக்கத்தில் ஒன்றையும் குறிப்பிடவில்லை. வேலை செய்யாத தொடர்பு வழியைக் காட்டுவதை விட, இதை நேர்மையாகச் சொல்வதே சரி என்று கருதுகிறோம்.',
+        'You can reach The Everyday Wonders by email at the address below.',
+        'The Everyday Wonders-ஐ கீழே உள்ள முகவரியில் மின்னஞ்சல் மூலம் தொடர்புகொள்ளலாம்.',
       ),
-      h2('What this means', 'இதன் பொருள்'),
+      { type: 'email', label: { en: 'Email', ta: 'மின்னஞ்சல்' } },
+      h2('What to write to us about', 'எதைப் பற்றி எழுதலாம்'),
       ul(
         [
-          'The site has no contact form, comment section or newsletter, so it does not collect any messages or personal details.',
-          'A contact method will be added to this page when one is ready.',
+          'Corrections to an article or guide.',
+          'Questions about the site or its content.',
+          'Suggestions for topics you would like explained.',
         ],
         [
-          'தளத்தில் தொடர்புப் படிவம், கருத்துப் பகுதி, செய்திமடல் எதுவும் இல்லை; எனவே இது எந்தச் செய்திகளையோ தனிப்பட்ட விவரங்களையோ சேகரிப்பதில்லை.',
-          'ஒரு தொடர்பு வழி தயாரானதும் இந்தப் பக்கத்தில் சேர்க்கப்படும்.',
+          'ஒரு கட்டுரை அல்லது வழிகாட்டியில் உள்ள திருத்தங்கள்.',
+          'தளம் அல்லது அதன் உள்ளடக்கம் பற்றிய கேள்விகள்.',
+          'விளக்கப்பட வேண்டும் என நீங்கள் விரும்பும் தலைப்புகள் பற்றிய பரிந்துரைகள்.',
         ],
       ),
-      h2('Found a mistake?', 'தவறு கண்டீர்களா?'),
+      h2('What happens to your email', 'உங்கள் மின்னஞ்சலுக்கு என்ன நடக்கிறது'),
       p(
-        'Corrections are welcome. Until a contact method is added, we are unable to receive them through this site.',
-        'திருத்தங்கள் வரவேற்கப்படுகின்றன. தொடர்பு வழி சேர்க்கப்படும் வரை, இந்தத் தளம் வழியாக அவற்றைப் பெற இயலாது.',
+        'If you write to us, we receive your email address and whatever you include in your message. We use it to read and reply to you. The site itself has no contact form and collects nothing automatically.',
+        'நீங்கள் எங்களுக்கு எழுதினால், உங்கள் மின்னஞ்சல் முகவரியையும் செய்தியில் நீங்கள் குறிப்பிடுவதையும் நாங்கள் பெறுகிறோம். உங்களுக்குப் படித்துப் பதிலளிக்க அதைப் பயன்படுத்துகிறோம். தளத்தில் தொடர்புப் படிவம் இல்லை; அது தானாக எதையும் சேகரிப்பதில்லை.',
+      ),
+      h2('Please note', 'தயவுசெய்து கவனிக்கவும்'),
+      p(
+        'We cannot give personal financial, investment or medical advice by email. Please read the Disclaimer.',
+        'மின்னஞ்சல் வழியாகத் தனிப்பட்ட நிதி, முதலீட்டு அல்லது மருத்துவ ஆலோசனை வழங்க எங்களால் இயலாது. தயவுசெய்து பொறுப்புத் துறப்பைப் படியுங்கள்.',
       ),
     ],
   },
@@ -137,6 +149,11 @@ export const infoPages: Record<PageKey, InfoPageData> = {
       p(
         'Choosing English or Tamil simply takes you to the page in that language. Your choice is not saved.',
         'ஆங்கிலம் அல்லது தமிழைத் தேர்ந்தெடுப்பது, அந்த மொழியிலுள்ள பக்கத்துக்கு உங்களை அழைத்துச் செல்வதே. உங்கள் தேர்வு சேமிக்கப்படுவதில்லை.',
+      ),
+      h2('If you email us', 'நீங்கள் எங்களுக்கு மின்னஞ்சல் அனுப்பினால்'),
+      p(
+        'If you write to the address on the Contact page, we receive your email address and the contents of your message, and we use them to read and reply to you. Email is handled by an ordinary email service, so it passes through that provider as well. Please do not send sensitive personal or financial details.',
+        'தொடர்புப் பக்கத்தில் உள்ள முகவரிக்கு நீங்கள் எழுதினால், உங்கள் மின்னஞ்சல் முகவரியையும் செய்தியின் உள்ளடக்கத்தையும் நாங்கள் பெறுகிறோம்; உங்களுக்குப் படித்துப் பதிலளிக்க அவற்றைப் பயன்படுத்துகிறோம். மின்னஞ்சல் ஒரு வழக்கமான மின்னஞ்சல் சேவை மூலம் கையாளப்படுகிறது; எனவே அது அந்தச் சேவை வழங்குநர் வழியாகவும் செல்கிறது. உணர்திறன் மிக்க தனிப்பட்ட அல்லது நிதி விவரங்களை அனுப்ப வேண்டாம்.',
       ),
       h2('Changes to this policy', 'இந்தக் கொள்கையில் மாற்றங்கள்'),
       p(

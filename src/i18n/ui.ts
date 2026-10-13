@@ -63,6 +63,10 @@ export const ui = {
     'bottom.articles': 'Articles',
     'bottom.topics': 'Topics',
     'bottom.menu': 'Menu',
+    'notfound.title': 'Page not found',
+    'notfound.text':
+      "We couldn't find the page you were looking for. It may have moved, or it may not have been written yet.",
+    'notfound.cta': 'Back to the homepage',
   },
   ta: {
     'site.name.the': 'The',
@@ -118,6 +122,10 @@ export const ui = {
     'bottom.articles': 'கட்டுரைகள்',
     'bottom.topics': 'தலைப்புகள்',
     'bottom.menu': 'மெனு',
+    'notfound.title': 'பக்கம் கிடைக்கவில்லை',
+    'notfound.text':
+      'நீங்கள் தேடிய பக்கம் கிடைக்கவில்லை. அது இடம் மாறியிருக்கலாம் அல்லது இன்னும் எழுதப்படாமல் இருக்கலாம்.',
+    'notfound.cta': 'முகப்புப் பக்கத்திற்குச் செல்க',
   },
 } as const;
 

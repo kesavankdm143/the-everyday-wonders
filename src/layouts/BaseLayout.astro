@@ -8,9 +8,11 @@ interface Props {
   description: string;
   /** Path after the language prefix, e.g. "" for the homepage. Used for hreflang links. */
   path?: string;
+  /** Keeps a page out of search results and skips the language links. Used by the 404 page. */
+  noindex?: boolean;
 }
 
-const { lang, title, description, path = '' } = Astro.props;
+const { lang, title, description, path = '', noindex = false } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -25,10 +27,12 @@ const t = useTranslations(lang);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
 
+    {noindex && <meta name="robots" content="noindex" />}
+
     <!-- Tell search engines that English and Tamil versions of this page exist -->
-    <link rel="alternate" hreflang="en" href={`/en/${path}`} />
-    <link rel="alternate" hreflang="ta" href={`/ta/${path}`} />
-    <link rel="alternate" hreflang="x-default" href={`/en/${path}`} />
+    {!noindex && <link rel="alternate" hreflang="en" href={`/en/${path}`} />}
+    {!noindex && <link rel="alternate" hreflang="ta" href={`/ta/${path}`} />}
+    {!noindex && <link rel="alternate" hreflang="x-default" href={`/en/${path}`} />}
 
     <link rel="preload" href="/fonts/poppins-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
     {

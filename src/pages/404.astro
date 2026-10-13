@@ -1,0 +1,180 @@
+---
+// The "page not found" page. Cloudflare Pages shows it (with a real 404 status) for any
+// address that doesn't exist. One file covers every address, so it can't know which
+// language the visitor wanted — it speaks both and offers a way home in each.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { useTranslations } from '../i18n/ui';
+
+const en = useTranslations('en');
+const ta = useTranslations('ta');
+---
+
+<BaseLayout
+  lang="en"
+  title={`${en('notfound.title')} · ${ta('notfound.title')} — The Everyday Wonders`}
+  description={en('notfound.text')}
+  noindex
+>
+  <main id="main" class="container nf">
+    <a class="nf-brand" href="/en/">
+      <img src="/images/logo.svg" alt="" width="64" height="64" />
+      <span>The Everyday Wonders</span>
+    </a>
+
+    <section class="nf-card" aria-labelledby="nf-title">
+      <div class="nf-copy">
+        <p class="nf-code" aria-hidden="true">404</p>
+
+        <div class="nf-block" lang="en">
+          <h1 id="nf-title" class="nf-title">{en('notfound.title')}</h1>
+          <p class="nf-text">{en('notfound.text')}</p>
+          <a class="btn btn-gold" href="/en/">
+            {en('notfound.cta')}
+            <Icon name="arrow" size={18} />
+          </a>
+        </div>
+
+        <div class="nf-block nf-block-ta" lang="ta">
+          <p class="nf-title nf-title-ta">{ta('notfound.title')}</p>
+          <p class="nf-text">{ta('notfound.text')}</p>
+          <a class="btn btn-ghost" href="/ta/">
+            {ta('notfound.cta')}
+            <Icon name="arrow" size={18} />
+          </a>
+        </div>
+      </div>
+
+      <img class="nf-art" src="/images/art/black-hole.svg" alt="" width="400" height="400" />
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-block: 20px 32px;
+  }
+
+  .nf-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    margin-bottom: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .nf-brand img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nf-card {
+    display: grid;
+    gap: 28px;
+    align-items: center;
+    padding: 26px 22px;
+    border-radius: var(--radius-lg);
+    background-color: var(--navy-900);
+    background-image: url('/images/art/header-space.svg');
+    background-size: cover;
+    background-position: right center;
+    box-shadow: var(--shadow);
+    color: #fff;
+  }
+
+  .nf-code {
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .nf-block {
+    margin-top: 18px;
+  }
+  .nf-block-ta {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .nf-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .nf-title-ta {
+    color: var(--gold-light);
+  }
+  .nf-text {
+    margin-top: 8px;
+    max-width: 52ch;
+    color: #d6deef;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    transition: transform 0.2s;
+  }
+  .btn:hover {
+    transform: translateX(3px);
+  }
+  .btn-gold {
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    color: var(--navy-950);
+    box-shadow: 0 6px 18px rgba(217, 180, 90, 0.35);
+  }
+  .btn-ghost {
+    border: 1.5px solid rgba(242, 213, 138, 0.55);
+    color: #fff;
+  }
+
+  .nf-art {
+    width: min(220px, 60%);
+    height: auto;
+    margin-inline: auto;
+    border-radius: 50%;
+    border: 2px solid rgba(242, 213, 138, 0.45);
+    box-shadow: 0 0 40px rgba(255, 138, 42, 0.25);
+  }
+
+  @media (min-width: 768px) {
+    .nf {
+      padding-block: 32px 48px;
+    }
+    .nf-card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 40px;
+      padding: 44px;
+    }
+    .nf-code {
+      font-size: 6rem;
+    }
+    .nf-title {
+      font-size: 2.2rem;
+    }
+    .nf-art {
+      width: 300px;
+      margin-inline: 0;
+    }
+  }
+</style>

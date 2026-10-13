@@ -1,0 +1,87 @@
+---
+// The large banner at the top of every section page.
+import { type CategoryKey, categoryLabel } from '../data/home';
+import { sections } from '../data/sections';
+import { type Lang, otherLang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  section: CategoryKey;
+}
+const { lang, section } = Astro.props;
+const other = otherLang(lang);
+const { image, description } = sections[section];
+---
+
+<section class="hero" aria-labelledby="section-title">
+  <img class="hero-art" src={image} alt="" width="400" height="400" decoding="async" />
+  <div class="hero-body">
+    <h1 id="section-title" class="hero-title">{categoryLabel[section][lang]}</h1>
+    <p class="hero-sub" lang={other}>{categoryLabel[section][other]}</p>
+    <p class="hero-text">{description[lang]}</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 16px;
+    align-items: center;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    background-color: var(--navy-900);
+    background-image: url('/images/art/header-space.svg');
+    background-size: cover;
+    background-position: right center;
+    box-shadow: var(--shadow);
+    color: #fff;
+  }
+  .hero-art {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 2px solid rgba(242, 213, 138, 0.45);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  }
+  .hero-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .hero-sub {
+    margin-top: 2px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .hero-text {
+    margin-top: 10px;
+    max-width: 60ch;
+    color: #d6deef;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 32px;
+      padding: 36px 40px;
+    }
+    .hero-art {
+      order: 2;
+      width: 180px;
+      height: 180px;
+    }
+    .hero-title {
+      font-size: 2.6rem;
+    }
+    .hero-sub {
+      font-size: 1.4rem;
+    }
+    .hero-text {
+      font-size: 1.05rem;
+    }
+  }
+</style>

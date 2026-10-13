@@ -1,0 +1,24 @@
+---
+// Builds the eight section pages in both languages:
+//   /en/science/ … /en/business/   and   /ta/science/ … /ta/business/
+// To add or remove a section, change `sectionOrder` in src/data/sections.ts.
+import type { InferGetStaticPropsType } from 'astro';
+import SectionPage from '../../components/SectionPage.astro';
+import { languages, type Lang } from '../../i18n/ui';
+import { sectionOrder } from '../../data/sections';
+
+export function getStaticPaths() {
+  const langs = Object.keys(languages) as Lang[];
+  return langs.flatMap((lang) =>
+    sectionOrder.map((section) => ({
+      params: { lang, section },
+      props: { lang, section },
+    })),
+  );
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { lang, section } = Astro.props as Props;
+---
+
+<SectionPage lang={lang} section={section} />

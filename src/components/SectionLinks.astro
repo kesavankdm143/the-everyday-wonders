@@ -1,0 +1,62 @@
+---
+// "More sections" — links to the other seven section pages.
+import Icon from './Icon.astro';
+import type { CategoryKey } from '../data/home';
+import { sectionOrder } from '../data/sections';
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** The section being viewed; it is left out of the list. */
+  current: CategoryKey;
+}
+const { lang, current } = Astro.props;
+const t = useTranslations(lang);
+const others = sectionOrder.filter((key) => key !== current);
+---
+
+<nav class="panel" aria-labelledby="more-sections-title">
+  <div class="section-head">
+    <h2 id="more-sections-title">{t('section.others')}</h2>
+  </div>
+  <ul class="links">
+    {
+      others.map((key) => (
+        <li>
+          <a href={`/${lang}/${key}/`}>
+            <Icon name={key} size={18} />
+            <span>{t(`nav.${key}`)}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  a:hover {
+    border-color: var(--gold);
+    color: var(--gold-ink);
+  }
+</style>

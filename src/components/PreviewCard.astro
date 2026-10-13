@@ -1,0 +1,130 @@
+---
+// A sample-content card for section pages. It is deliberately NOT a link:
+// the article pages it would open do not exist yet. When they do, this is the
+// one place to make the title a link.
+import Icon from './Icon.astro';
+import type { Bi } from '../data/home';
+import { type Lang, useTranslations, otherLang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: Bi;
+  image: string;
+  summary?: Bi;
+  minutes?: number;
+  /** Show the "Sample" tag. On for sample articles, off for plain topic cards. */
+  sample?: boolean;
+}
+const { lang, title, image, summary, minutes, sample = true } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+---
+
+<article class="card">
+  <img src={image} alt="" width="400" height="400" loading="lazy" decoding="async" />
+  <div class="card-body">
+    <h3>{title[lang]}</h3>
+    <p class="sub" lang={other}>{title[other]}</p>
+    {summary && <p class="summary">{summary[lang]}</p>}
+    <p class="meta">
+      {sample && <span class="sample-tag">{t('sample')}</span>}
+      <span class="soon-tag">{t('section.soon')}</span>
+      {
+        minutes && (
+          <span class="time">
+            <Icon name="clock" size={14} /> {minutes} {t('minRead')}
+          </span>
+        )
+      }
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 14px;
+    align-items: start;
+    height: 100%;
+  }
+  .card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .sub {
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+  .summary {
+    display: none;
+    margin-top: 2px;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  /* Long unbroken words (common in Tamil) must wrap instead of pushing the page wider */
+  h3,
+  .sub,
+  .summary {
+    overflow-wrap: anywhere;
+  }
+  /* Very narrow phones: a smaller thumbnail leaves room for the text */
+  @media (max-width: 359px) {
+    .card {
+      grid-template-columns: 84px 1fr;
+      gap: 12px;
+    }
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .soon-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: #fff4d6;
+    color: var(--gold-ink);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+  }
+  .time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  @media (min-width: 720px) {
+    .card {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .card img {
+      aspect-ratio: 16 / 9;
+    }
+    .summary {
+      display: block;
+    }
+  }
+</style>

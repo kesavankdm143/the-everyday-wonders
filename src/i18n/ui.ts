@@ -67,6 +67,10 @@ export const ui = {
     'notfound.text':
       "We couldn't find the page you were looking for. It may have moved, or it may not have been written yet.",
     'notfound.cta': 'Back to the homepage',
+    'section.articles': 'Articles in this section',
+    'section.empty': 'Articles for this section are on the way. Please check back soon.',
+    'section.soon': 'Coming soon',
+    'section.others': 'More sections',
   },
   ta: {
     'site.name.the': 'The',
@@ -126,6 +130,11 @@ export const ui = {
     'notfound.text':
       'நீங்கள் தேடிய பக்கம் கிடைக்கவில்லை. அது இடம் மாறியிருக்கலாம் அல்லது இன்னும் எழுதப்படாமல் இருக்கலாம்.',
     'notfound.cta': 'முகப்புப் பக்கத்திற்குச் செல்க',
+    'section.articles': 'இந்தப் பிரிவின் கட்டுரைகள்',
+    'section.empty':
+      'இந்தப் பிரிவுக்கான கட்டுரைகள் விரைவில் வரும். சிறிது நாள் கழித்து மீண்டும் வந்து பாருங்கள்.',
+    'section.soon': 'விரைவில்',
+    'section.others': 'மேலும் பிரிவுகள்',
   },
 } as const;
 

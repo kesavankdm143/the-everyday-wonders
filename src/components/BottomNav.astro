@@ -5,16 +5,27 @@ import { type Lang, useTranslations } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** True on the homepage, where the bar jumps to blocks on the same page. */
+  isHome?: boolean;
+  /** The section being viewed (e.g. "markets"), so its tab can be highlighted. */
+  current?: string;
 }
-const { lang } = Astro.props;
+const { lang, isHome = true, current } = Astro.props;
 const t = useTranslations(lang);
+
+// Away from the homepage those blocks live on the homepage, so link back to them.
+const home = `/${lang}/`;
+const marketsHref = isHome ? '#markets' : `${home}markets/`;
+const articlesHref = isHome ? '#latest' : `${home}#latest`;
+const topicsHref = isHome ? '#topics' : `${home}#topics`;
+const onMarkets = current === 'markets';
 ---
 
 <nav class="bottom-nav" aria-label={t('bottom.label')}>
-  <a href={`/${lang}/`} class="active" aria-current="page"><Icon name="home" size={22} /><span>{t('bottom.home')}</span></a>
-  <a href="#markets"><Icon name="markets" size={22} /><span>{t('bottom.markets')}</span></a>
-  <a href="#latest"><Icon name="articles" size={22} /><span>{t('bottom.articles')}</span></a>
-  <a href="#topics"><Icon name="topics" size={22} /><span>{t('bottom.topics')}</span></a>
+  <a href={home} class={isHome ? 'active' : undefined} aria-current={isHome ? 'page' : undefined}><Icon name="home" size={22} /><span>{t('bottom.home')}</span></a>
+  <a href={marketsHref} class={onMarkets ? 'active' : undefined} aria-current={onMarkets ? 'page' : undefined}><Icon name="markets" size={22} /><span>{t('bottom.markets')}</span></a>
+  <a href={articlesHref}><Icon name="articles" size={22} /><span>{t('bottom.articles')}</span></a>
+  <a href={topicsHref}><Icon name="topics" size={22} /><span>{t('bottom.topics')}</span></a>
   <button type="button" data-open-menu><Icon name="menu" size={22} /><span>{t('bottom.menu')}</span></button>
 </nav>
 

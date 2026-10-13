@@ -16,6 +16,7 @@ import { type CategoryKey, categoryLabel, financeTopics } from '../data/home';
 import { sections } from '../data/sections';
 import { articlesFor, getDek } from '../data/articles';
 import { articleHref } from '../data/articleFiles';
+import { topicHref } from '../data/topics';
 import { type Lang, useTranslations } from '../i18n/ui';
 
 interface Props {
@@ -94,7 +95,13 @@ const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
           <ul class="grid">
             {financeTopics.map((f) => (
               <li>
-                <ArticleCard lang={lang} title={f.title} image={f.image} summary={f.desc[lang]} />
+                <ArticleCard
+                  lang={lang}
+                  title={f.title}
+                  image={f.image}
+                  href={topicHref(lang, f.slug)}
+                  summary={f.desc[lang]}
+                />
               </li>
             ))}
           </ul>

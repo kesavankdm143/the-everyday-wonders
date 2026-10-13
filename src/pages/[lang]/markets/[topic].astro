@@ -1,0 +1,41 @@
+---
+// Builds the four guides: /en/markets/<slug>/ and, where translated, /ta/markets/<slug>/.
+import { getCollection, getEntry, render } from 'astro:content';
+import TopicPage from '../../../components/TopicPage.astro';
+import { checkTopics, getTopic, hasTopicTranslation, topicMarkets } from '../../../data/topics';
+import { getArticle, getDek } from '../../../data/articles';
+import type { Lang } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  await checkTopics();
+  const entries = await getCollection('topics');
+  return entries.map((entry) => {
+    const [lang, topic] = entry.id.split('/');
+    return { params: { lang, topic }, props: { entry, lang: lang as Lang, topic } };
+  });
+}
+
+const { entry, lang, topic } = Astro.props;
+const meta = getTopic(topic)!;
+const { Content } = await render(entry);
+const master = (await getEntry('topics', `en/${topic}`))!;
+const related = await Promise.all(
+  (master.data.related ?? []).map(async (slug) => ({ article: getArticle(slug)!, dek: await getDek(slug, lang) })),
+);
+const translated = hasTopicTranslation(topic);
+---
+
+<TopicPage
+  lang={lang}
+  slug={topic}
+  title={meta.title}
+  image={meta.image}
+  dek={entry.data.dek}
+  updated={master.data.updated!}
+  markets={topicMarkets[topic]}
+  related={related}
+  available={translated ? ['en', 'ta'] : ['en']}
+  switchTo={translated ? undefined : { ta: '/ta/markets/' }}
+>
+  <Content />
+</TopicPage>

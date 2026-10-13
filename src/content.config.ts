@@ -22,4 +22,17 @@ const articles = defineCollection({
   }),
 });
 
-export const collections = { articles };
+// Guides for the "Money & Markets" topics (src/content/topics/en|ta/<slug>.md).
+// The slug must match a topic in `financeTopics` in src/data/home.ts.
+const topics = defineCollection({
+  loader: glob({ base: './src/content/topics', pattern: '**/*.md' }),
+  schema: z.object({
+    dek: z.string().min(20),
+    /** The day the guide was last changed (English file only). */
+    updated: z.coerce.date().optional(),
+    /** Slugs of related articles (English file only). */
+    related: z.array(z.string()).optional(),
+  }),
+});
+
+export const collections = { articles, topics };

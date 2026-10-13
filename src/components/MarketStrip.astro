@@ -7,9 +7,12 @@ import { type Lang, useTranslations } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
+  /** Show only these markets (used on topic pages). Default: all of them. */
+  only?: MarketItem['icon'][];
 }
-const { lang } = Astro.props;
+const { lang, only } = Astro.props;
 const t = useTranslations(lang);
+const items = only ? sampleMarkets.filter((m) => only.includes(m.icon)) : sampleMarkets;
 
 // Turn a list of numbers into a tiny line chart (64 × 26 box).
 function sparkPoints(values: number[]) {
@@ -46,9 +49,9 @@ const symbols: Record<MarketItem['icon'], string> = {
     <h2 id="markets-title">{t('markets.title')}</h2>
     <span class="chip badge"><Icon name="info" size={14} />{t('markets.badge')}</span>
   </div>
-  <ul class="market-list">
+  <ul class:list={['market-list', { few: Boolean(only) }]}>
     {
-      sampleMarkets.map((m) => (
+      items.map((m) => (
         <li class="mk">
           <div class="mk-top">
             <span class="mk-name">{m.name[lang]}</span>
@@ -174,6 +177,14 @@ const symbols: Record<MarketItem['icon'], string> = {
     width: 100%;
     height: 22px;
     margin-top: 4px;
+  }
+
+  /* A short list (topic pages): keep the tiles a sensible size */
+  .market-list.few {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 230px));
+  }
+  .market-list.few .mk:last-child {
+    grid-column: auto;
   }
 
   @media (min-width: 720px) {

@@ -8,14 +8,17 @@ interface Props {
   active?: string;
   /** On the homepage the site name is the page's main heading (h1) */
   isHome?: boolean;
+  /** Where a language pill should go when this page has no twin at the usual address. */
+  switchTo?: Partial<Record<Lang, string>>;
 }
 
-const { lang, active = 'home', isHome = false } = Astro.props;
+const { lang, active = 'home', isHome = false, switchTo } = Astro.props;
 const t = useTranslations(lang);
 
 // Same page in the other language: swap the /en/ or /ta/ prefix.
 const path = Astro.url.pathname;
-const swapTo = (target: Lang) => path.replace(/^\/(en|ta)(\/|$)/, `/${target}/`) || `/${target}/`;
+const swapTo = (target: Lang) =>
+  switchTo?.[target] ?? (path.replace(/^\/(en|ta)(\/|$)/, `/${target}/`) || `/${target}/`);
 
 const navItems = [
   { key: 'home', href: `/${lang}/` },

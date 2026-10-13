@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { latestArticles, categoryLabel } from '../data/home';
+import { articleHref } from '../data/articleFiles';
 import { type Lang, useTranslations, otherLang } from '../i18n/ui';
 
 interface Props {
@@ -25,11 +26,10 @@ const other = otherLang(lang);
             <div class="card-body">
               <span class="cat">{categoryLabel[a.category][lang]}</span>
               <h3>
-                <a class="stretched" href={`/${lang}/articles/${a.slug}/`}>{a.title[lang]}</a>
+                <a class="stretched" href={articleHref(lang, a.slug)}>{a.title[lang]}</a>
               </h3>
               <p class="sub" lang={other}>{a.title[other]}</p>
               <p class="meta">
-                <span class="sample-tag">{t('sample')}</span>
                 <span class="time"><Icon name="clock" size={14} /> {a.minutes} {t('minRead')}</span>
               </p>
             </div>

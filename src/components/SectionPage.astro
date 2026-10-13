@@ -1,18 +1,21 @@
 ---
 // One section page (Science, Space, …). /en/<section>/ and /ta/<section>/ both
 // use this, so all eight sections share one design and only the content differs.
-// Everything shown here is SAMPLE content — nothing is real news or live data.
+// The article cards link to the real articles. The market figures on the Markets
+// page are SAMPLE data and are labelled that way on screen.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from './SiteHeader.astro';
 import SectionHero from './SectionHero.astro';
 import MarketStrip from './MarketStrip.astro';
-import PreviewCard from './PreviewCard.astro';
+import ArticleCard from './ArticleCard.astro';
 import SectionLinks from './SectionLinks.astro';
 import SiteFooter from './SiteFooter.astro';
 import BottomNav from './BottomNav.astro';
 import Icon from './Icon.astro';
 import { type CategoryKey, categoryLabel, financeTopics } from '../data/home';
-import { sections, sampleArticlesFor } from '../data/sections';
+import { sections } from '../data/sections';
+import { articlesFor, getDek } from '../data/articles';
+import { articleHref } from '../data/articleFiles';
 import { type Lang, useTranslations } from '../i18n/ui';
 
 interface Props {
@@ -22,7 +25,9 @@ interface Props {
 const { lang, section } = Astro.props;
 const t = useTranslations(lang);
 
-const articles = sampleArticlesFor(section);
+const articles = await Promise.all(
+  articlesFor(section).map(async (article) => ({ article, dek: await getDek(article.slug, lang) })),
+);
 const isMarkets = section === 'markets';
 const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
 ---
@@ -31,10 +36,14 @@ const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
   <SiteHeader lang={lang} active={section} />
 
   <main id="main" class="container page">
-    <p class="note" role="note">
-      <Icon name="info" size={18} />
-      <span>{t('preview.note')}</span>
-    </p>
+    {
+      isMarkets && (
+        <p class="note" role="note">
+          <Icon name="info" size={18} />
+          <span>{t('preview.note')}</span>
+        </p>
+      )
+    }
 
     <SectionHero lang={lang} section={section} />
 
@@ -57,9 +66,16 @@ const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
       {
         articles.length > 0 ? (
           <ul class="grid">
-            {articles.map((a) => (
+            {articles.map(({ article, dek }) => (
               <li>
-                <PreviewCard lang={lang} title={a.title} image={a.image} summary={a.summary} minutes={a.minutes} />
+                <ArticleCard
+                  lang={lang}
+                  title={article.title}
+                  image={article.image}
+                  href={articleHref(lang, article.slug)}
+                  summary={dek}
+                  minutes={article.minutes}
+                />
               </li>
             ))}
           </ul>
@@ -78,7 +94,7 @@ const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
           <ul class="grid">
             {financeTopics.map((f) => (
               <li>
-                <PreviewCard lang={lang} title={f.title} image={f.image} summary={f.desc} sample={false} />
+                <ArticleCard lang={lang} title={f.title} image={f.image} summary={f.desc[lang]} />
               </li>
             ))}
           </ul>

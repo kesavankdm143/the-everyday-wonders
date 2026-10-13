@@ -1,0 +1,141 @@
+---
+// The list of all articles: /en/articles/ and /ta/articles/ (the "View All" links).
+// Articles are grouped by section; a section with no articles yet is left out.
+import PageFrame from '../../../components/PageFrame.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+import Icon from '../../../components/Icon.astro';
+import { categoryLabel } from '../../../data/home';
+import { sectionOrder } from '../../../data/sections';
+import { articlesFor, getDek } from '../../../data/articles';
+import { articleHref } from '../../../data/articleFiles';
+import { languages, type Lang, useTranslations, otherLang } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as Lang[]).map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+
+const groups = await Promise.all(
+  sectionOrder
+    .filter((key) => articlesFor(key).length > 0)
+    .map(async (key) => ({
+      key,
+      label: categoryLabel[key][lang],
+      items: await Promise.all(
+        articlesFor(key).map(async (article) => ({ article, dek: await getDek(article.slug, lang) })),
+      ),
+    })),
+);
+---
+
+<PageFrame
+  lang={lang}
+  title={`${t('articles.title')} — The Everyday Wonders`}
+  description={t('articles.description')}
+  path="articles/"
+  active="articles"
+>
+  <section class="intro" aria-labelledby="articles-title">
+    <h1 id="articles-title">{t('articles.title')}</h1>
+    <p class="intro-sub" lang={other}>{useTranslations(other)('articles.title')}</p>
+    <p class="intro-text">{t('articles.description')}</p>
+  </section>
+
+  {
+    groups.map((group) => (
+      <section class="panel" aria-labelledby={`group-${group.key}`}>
+        <div class="section-head">
+          <h2 id={`group-${group.key}`}>{group.label}</h2>
+          <a class="view-all" href={`/${lang}/${group.key}/`}>
+            {t('viewAll')} <Icon name="arrow" size={15} />
+          </a>
+        </div>
+        <ul class="grid">
+          {group.items.map(({ article, dek }) => (
+            <li>
+              <ArticleCard
+                lang={lang}
+                title={article.title}
+                image={article.image}
+                href={articleHref(lang, article.slug)}
+                summary={dek}
+                minutes={article.minutes}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</PageFrame>
+
+<style>
+  .intro {
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    background-color: var(--navy-900);
+    background-image: url('/images/art/header-space.svg');
+    background-size: cover;
+    background-position: right center;
+    box-shadow: var(--shadow);
+    color: #fff;
+  }
+  h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .intro-sub {
+    margin-top: 2px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+  .intro-text {
+    margin-top: 10px;
+    max-width: 60ch;
+    color: #d6deef;
+  }
+  /* A long Tamil section name must not push "View all" off a narrow screen */
+  .section-head {
+    flex-wrap: wrap;
+  }
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+  }
+  @media (min-width: 768px) {
+    .intro {
+      padding: 36px 40px;
+    }
+    h1 {
+      font-size: 2.6rem;
+    }
+    .intro-sub {
+      font-size: 1.4rem;
+    }
+    .intro-text {
+      font-size: 1.05rem;
+    }
+  }
+  @media (min-width: 1100px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+  }
+</style>

@@ -1,7 +1,6 @@
 ---
-// A sample-content card for section pages. It is deliberately NOT a link:
-// the article pages it would open do not exist yet. When they do, this is the
-// one place to make the title a link.
+// A card for an article. With `href` the title is a link to the article.
+// Without it (topic ideas that have no page yet) the card is labelled "Coming soon".
 import Icon from './Icon.astro';
 import type { Bi } from '../data/home';
 import { type Lang, useTranslations, otherLang } from '../i18n/ui';
@@ -10,38 +9,47 @@ interface Props {
   lang: Lang;
   title: Bi;
   image: string;
-  summary?: Bi;
+  href?: string;
+  /** A small label above the title, e.g. the section name. */
+  kicker?: string;
+  /** Short description, already in the reader's language. */
+  summary?: string;
   minutes?: number;
-  /** Show the "Sample" tag. On for sample articles, off for plain topic cards. */
-  sample?: boolean;
 }
-const { lang, title, image, summary, minutes, sample = true } = Astro.props;
+const { lang, title, image, href, kicker, summary, minutes } = Astro.props;
 const t = useTranslations(lang);
 const other = otherLang(lang);
 ---
 
-<article class="card">
+<article class:list={['card', { linked: Boolean(href) }]}>
   <img src={image} alt="" width="400" height="400" loading="lazy" decoding="async" />
   <div class="card-body">
-    <h3>{title[lang]}</h3>
+    {kicker && <span class="kicker">{kicker}</span>}
+    <h3>
+      {href ? <a class="stretched" href={href}>{title[lang]}</a> : title[lang]}
+    </h3>
     <p class="sub" lang={other}>{title[other]}</p>
-    {summary && <p class="summary">{summary[lang]}</p>}
-    <p class="meta">
-      {sample && <span class="sample-tag">{t('sample')}</span>}
-      <span class="soon-tag">{t('section.soon')}</span>
-      {
-        minutes && (
-          <span class="time">
-            <Icon name="clock" size={14} /> {minutes} {t('minRead')}
-          </span>
-        )
-      }
-    </p>
+    {summary && <p class="summary">{summary}</p>}
+    {
+      (!href || minutes) && (
+        <p class="meta">
+          {!href && <span class="soon-tag">{t('section.soon')}</span>}
+          {
+            minutes && (
+              <span class="time">
+                <Icon name="clock" size={14} /> {minutes} {t('minRead')}
+              </span>
+            )
+          }
+        </p>
+      )
+    }
   </div>
 </article>
 
 <style>
   .card {
+    position: relative;
     display: grid;
     grid-template-columns: 112px 1fr;
     gap: 14px;
@@ -60,10 +68,20 @@ const other = otherLang(lang);
     gap: 3px;
     min-width: 0;
   }
+  .kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
   h3 {
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.35;
+  }
+  .linked:hover h3 {
+    color: var(--blue);
   }
   .sub {
     font-size: 0.84rem;
@@ -80,13 +98,6 @@ const other = otherLang(lang);
   .sub,
   .summary {
     overflow-wrap: anywhere;
-  }
-  /* Very narrow phones: a smaller thumbnail leaves room for the text */
-  @media (max-width: 359px) {
-    .card {
-      grid-template-columns: 84px 1fr;
-      gap: 12px;
-    }
   }
   .meta {
     display: flex;
@@ -115,6 +126,13 @@ const other = otherLang(lang);
     gap: 4px;
   }
 
+  /* Very narrow phones: a smaller thumbnail leaves room for the text */
+  @media (max-width: 359px) {
+    .card {
+      grid-template-columns: 84px 1fr;
+      gap: 12px;
+    }
+  }
   @media (min-width: 720px) {
     .card {
       grid-template-columns: 1fr;

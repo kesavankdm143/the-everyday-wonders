@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { topStories } from '../data/home';
+import { articleHref } from '../data/articleFiles';
 import { type Lang, useTranslations, otherLang } from '../i18n/ui';
 
 interface Props {
@@ -20,7 +21,7 @@ const other = otherLang(lang);
     {
       topStories.map((a) => (
         <li>
-          <a href={`/${lang}/articles/${a.slug}/`} class="story">
+          <a href={articleHref(lang, a.slug)} class="story">
             <img src={a.image} alt="" width="400" height="400" loading="lazy" decoding="async" />
             <span class="story-text">
               <span class="story-title">{a.title[lang]}</span>
@@ -32,7 +33,6 @@ const other = otherLang(lang);
       ))
     }
   </ul>
-  <p class="note"><span class="sample-tag">{t('sample')}</span></p>
 </aside>
 
 <style>
@@ -83,8 +83,5 @@ const other = otherLang(lang);
   .story:hover :global(.story-chev) {
     color: var(--blue);
     transform: translateX(3px);
-  }
-  .note {
-    margin-top: 6px;
   }
 </style>

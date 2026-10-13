@@ -32,8 +32,7 @@ export const ui = {
     'nav.facts': 'Facts',
     'nav.markets': 'Markets',
     'nav.business': 'Business',
-    'preview.note':
-      'Design preview: every article and market figure on this page is a sample, not real news or live data.',
+    'preview.note': 'Market figures on this page are samples, not live data.',
     'markets.title': 'Market snapshot',
     'markets.badge': 'Sample data · not live',
     'markets.sample': 'Sample',
@@ -71,6 +70,12 @@ export const ui = {
     'section.empty': 'Articles for this section are on the way. Please check back soon.',
     'section.soon': 'Coming soon',
     'section.others': 'More sections',
+    'breadcrumb.label': 'Breadcrumb',
+    'article.related': 'Related articles',
+    'article.published': 'Published',
+    'articles.title': 'All articles',
+    'articles.description':
+      'Plain-language explainers on science, space, technology, nature, the human body, facts and money.',
   },
   ta: {
     'site.name.the': 'The',
@@ -95,8 +100,7 @@ export const ui = {
     'nav.facts': 'தகவல்கள்',
     'nav.markets': 'சந்தைகள்',
     'nav.business': 'வணிகம்',
-    'preview.note':
-      'வடிவமைப்பு முன்னோட்டம்: இப்பக்கத்தில் உள்ள கட்டுரைகளும் சந்தை எண்களும் மாதிரிகள் மட்டுமே; உண்மைச் செய்திகளோ நேரலைத் தரவோ அல்ல.',
+    'preview.note': 'இப்பக்கத்தில் உள்ள சந்தை எண்கள் மாதிரிகள் மட்டுமே; நேரலைத் தரவு அல்ல.',
     'markets.title': 'சந்தை நிலவரம்',
     'markets.badge': 'மாதிரித் தரவு · நேரலை அல்ல',
     'markets.sample': 'மாதிரி',
@@ -135,6 +139,12 @@ export const ui = {
       'இந்தப் பிரிவுக்கான கட்டுரைகள் விரைவில் வரும். சிறிது நாள் கழித்து மீண்டும் வந்து பாருங்கள்.',
     'section.soon': 'விரைவில்',
     'section.others': 'மேலும் பிரிவுகள்',
+    'breadcrumb.label': 'பக்கப் பாதை',
+    'article.related': 'தொடர்புடைய கட்டுரைகள்',
+    'article.published': 'வெளியான நாள்',
+    'articles.title': 'அனைத்துக் கட்டுரைகளும்',
+    'articles.description':
+      'அறிவியல், விண்வெளி, தொழில்நுட்பம், இயற்கை, மனித உடல், சுவாரஸ்யத் தகவல்கள், பணம் ஆகியவற்றைப் பற்றிய எளிய மொழி விளக்கங்கள்.',
   },
 } as const;
 
@@ -147,4 +157,14 @@ export function useTranslations(lang: Lang) {
 /** The other language — used for the bilingual subtitle and the language switch. */
 export function otherLang(lang: Lang): Lang {
   return lang === 'en' ? 'ta' : 'en';
+}
+
+/** A date written out in the reader's language, e.g. "13 October 2026". */
+export function formatDate(date: Date, lang: Lang): string {
+  return new Intl.DateTimeFormat(lang === 'ta' ? 'ta-IN' : 'en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date);
 }

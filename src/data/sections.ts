@@ -2,15 +2,7 @@
 // Titles come from `categoryLabel` in home.ts so a section is named the same
 // everywhere. To change what a section page says, edit it here.
 
-import {
-  type Article,
-  type Bi,
-  type CategoryKey,
-  featured,
-  topStories,
-  marketAnalysis,
-  latestArticles,
-} from './home';
+import type { Bi, CategoryKey } from './home';
 
 /** The sections in the same order as the header navigation. */
 export const sectionOrder: CategoryKey[] = [
@@ -84,18 +76,3 @@ export const sections: Record<CategoryKey, { image: string; description: Bi }> =
     },
   },
 };
-
-const allSampleArticles: Article[] = [featured, ...topStories, marketAnalysis, ...latestArticles];
-
-/** The SAMPLE articles that belong to a section (each one only once). */
-export function sampleArticlesFor(key: CategoryKey): Article[] {
-  const seen = new Set<string>();
-  const result: Article[] = [];
-  for (const a of allSampleArticles) {
-    if (a.category === key && !seen.has(a.slug)) {
-      seen.add(a.slug);
-      result.push(a);
-    }
-  }
-  return result;
-}

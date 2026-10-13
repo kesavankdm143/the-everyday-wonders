@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { marketAnalysis } from '../data/home';
+import { articleHref } from '../data/articleFiles';
 import { type Lang, useTranslations, otherLang } from '../i18n/ui';
 
 interface Props {
@@ -20,8 +21,7 @@ const a = marketAnalysis;
   <article class="analysis-card">
     <img src={a.image} alt="" width="400" height="400" loading="lazy" decoding="async" />
     <div class="analysis-body">
-      <span class="sample-tag">{t('sample')}</span>
-      <h3><a class="stretched" href={`/${lang}/articles/${a.slug}/`}>{a.title[lang]}</a></h3>
+      <h3><a class="stretched" href={articleHref(lang, a.slug)}>{a.title[lang]}</a></h3>
       <p class="sub" lang={other}>{a.title[other]}</p>
       {a.summary && <p class="summary">{a.summary[lang]}</p>}
       <span class="btn-green" aria-hidden="true">{t('analysis.cta')} <Icon name="arrow" size={16} /></span>

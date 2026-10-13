@@ -1,0 +1,65 @@
+---
+// "Home › Space › This article" trail. The last item is the current page and is not a link.
+import Icon from './Icon.astro';
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  lang: Lang;
+  items: Crumb[];
+}
+const { lang, items } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav class="crumbs" aria-label={t('breadcrumb.label')}>
+  <ol>
+    {
+      items.map((item, i) => (
+        <li>
+          {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+          {i < items.length - 1 && <Icon name="chevron" size={14} class="sep" />}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  a {
+    color: var(--blue);
+    font-weight: 500;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  li :global(.sep) {
+    flex-shrink: 0;
+    color: #9aa5ba;
+  }
+  [aria-current='page'] {
+    color: var(--ink);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+</style>

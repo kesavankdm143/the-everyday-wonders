@@ -1,0 +1,50 @@
+---
+// Builds every article page: /en/articles/<slug>/ and, where a translation exists,
+// /ta/articles/<slug>/. The pages are made from the files in src/content/articles/.
+import { getCollection, getEntry, render } from 'astro:content';
+import ArticlePage from '../../../components/ArticlePage.astro';
+import { checkArticles, getArticle, getDek } from '../../../data/articles';
+import { hasTranslation } from '../../../data/articleFiles';
+import type { Lang } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  await checkArticles();
+  const entries = await getCollection('articles');
+  return entries.map((entry) => {
+    const [lang, slug] = entry.id.split('/');
+    return { params: { lang, slug }, props: { entry, lang: lang as Lang, slug } };
+  });
+}
+
+const { entry, lang, slug } = Astro.props;
+
+const article = getArticle(slug)!;
+const { Content } = await render(entry);
+
+// The English file is the master record: it holds the date and the related list.
+const master = (await getEntry('articles', `en/${slug}`))!;
+const published = master.data.published!;
+const related = await Promise.all(
+  (master.data.related ?? []).map(async (relatedSlug) => ({
+    article: getArticle(relatedSlug)!,
+    dek: await getDek(relatedSlug, lang),
+  })),
+);
+
+const hasTamil = hasTranslation('ta', slug);
+const available: Lang[] = hasTamil ? ['en', 'ta'] : ['en'];
+// With no Tamil article yet, the Tamil pill opens the Tamil article list instead of a missing page.
+const switchTo = hasTamil ? undefined : { ta: '/ta/articles/' };
+---
+
+<ArticlePage
+  lang={lang}
+  article={article}
+  dek={entry.data.dek}
+  published={published}
+  related={related}
+  available={available}
+  switchTo={switchTo}
+>
+  <Content />
+</ArticlePage>

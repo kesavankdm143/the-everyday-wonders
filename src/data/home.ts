@@ -1,8 +1,10 @@
-// SAMPLE homepage content for the design preview.
-// Nothing here is real news or live market data. Each item will be replaced
-// by real articles (and, later, a verified data source) in upcoming steps.
+// Homepage content: the article cards (titles, categories, pictures, reading
+// time) and the SAMPLE market figures. The articles are real — their text lives
+// in src/content/articles/ — but the market figures are placeholders, not live
+// data, and are labelled that way on screen.
 
 import type { Lang } from '../i18n/ui';
+import { minutesFor } from './articleFiles';
 
 export type Bi = Record<Lang, string>;
 
@@ -122,7 +124,7 @@ export const sampleMarkets: MarketItem[] = [
   },
 ];
 
-/** SAMPLE featured story for the large hero card. */
+/** The featured story for the large hero card. */
 export const featured: Article = {
   slug: 'how-the-solar-system-works',
   category: 'space',
@@ -135,24 +137,24 @@ export const featured: Article = {
     ta: 'சூரியன், அதன் எட்டுக் கோள்கள், அவற்றைச் சுற்றுப்பாதையில் வைத்திருக்கும் கண்ணுக்குத் தெரியாத ஈர்ப்பு விசை — ஓர் எளிய அறிமுகம்.',
   },
   image: img('hero-solar-system'),
-  minutes: 7,
+  minutes: minutesFor('how-the-solar-system-works'),
 };
 
-/** SAMPLE "Top Stories" sidebar items. */
+/** "Top Stories" sidebar items. */
 export const topStories: Article[] = [
   {
     slug: 'how-rockets-reach-orbit',
     category: 'space',
     title: { en: 'How Rockets Reach Orbit', ta: 'ராக்கெட்டுகள் சுற்றுப்பாதையை எப்படி அடைகின்றன?' },
     image: img('space'),
-    minutes: 6,
+    minutes: minutesFor('how-rockets-reach-orbit'),
   },
   {
     slug: 'why-gold-holds-its-value',
     category: 'markets',
     title: { en: 'Why Gold Holds Its Value', ta: 'தங்கம் ஏன் தன் மதிப்பைத் தக்கவைக்கிறது?' },
     image: img('gold-silver'),
-    minutes: 5,
+    minutes: minutesFor('why-gold-holds-its-value'),
   },
   {
     slug: 'what-a-stock-index-measures',
@@ -162,7 +164,7 @@ export const topStories: Article[] = [
       ta: 'பங்குச் சந்தைக் குறியீடு உண்மையில் எதை அளக்கிறது?',
     },
     image: img('market-chart'),
-    minutes: 5,
+    minutes: minutesFor('what-a-stock-index-measures'),
   },
   {
     slug: 'how-ev-batteries-store-energy',
@@ -172,11 +174,11 @@ export const topStories: Article[] = [
       ta: 'மின்சார வாகன பேட்டரிகள் ஆற்றலை எப்படிச் சேமிக்கின்றன?',
     },
     image: img('ev-battery'),
-    minutes: 6,
+    minutes: minutesFor('how-ev-batteries-store-energy'),
   },
 ];
 
-/** SAMPLE educational market explainer. */
+/** The educational market explainer. */
 export const marketAnalysis: Article = {
   slug: 'what-moves-the-stock-market',
   category: 'markets',
@@ -189,24 +191,24 @@ export const marketAnalysis: Article = {
     ta: 'வட்டி விகிதங்கள், நிறுவன முடிவுகள், உலகச் செய்திகள் — தினசரி விலை மாற்றங்களின் பின்னணி, எளிய விளக்கம்.',
   },
   image: img('market-chart'),
-  minutes: 8,
+  minutes: minutesFor('what-moves-the-stock-market'),
 };
 
-/** SAMPLE "Latest Articles" grid. */
+/** "Latest Articles" grid. */
 export const latestArticles: Article[] = [
   {
     slug: 'what-is-a-black-hole',
     category: 'space',
     title: { en: 'What Is a Black Hole?', ta: 'கருந்துளை என்றால் என்ன?' },
     image: img('black-hole'),
-    minutes: 6,
+    minutes: minutesFor('what-is-a-black-hole'),
   },
   {
     slug: 'why-is-the-sky-blue',
     category: 'science',
     title: { en: 'Why Is the Sky Blue?', ta: 'வானம் ஏன் நீல நிறமாகத் தெரிகிறது?' },
     image: img('science'),
-    minutes: 4,
+    minutes: minutesFor('why-is-the-sky-blue'),
   },
   {
     slug: 'how-your-heart-pumps-blood',
@@ -216,7 +218,7 @@ export const latestArticles: Article[] = [
       ta: 'உங்கள் இதயம் இரத்தத்தை எப்படிச் செலுத்துகிறது?',
     },
     image: img('human-body'),
-    minutes: 5,
+    minutes: minutesFor('how-your-heart-pumps-blood'),
   },
   {
     slug: 'how-rainforests-make-rain',
@@ -226,7 +228,7 @@ export const latestArticles: Article[] = [
       ta: 'மழைக்காடுகள் தங்களுக்கான மழையை எப்படி உருவாக்குகின்றன?',
     },
     image: img('nature'),
-    minutes: 6,
+    minutes: minutesFor('how-rainforests-make-rain'),
   },
   {
     slug: 'how-wifi-passes-through-walls',
@@ -236,14 +238,14 @@ export const latestArticles: Article[] = [
       ta: 'வைஃபை சுவர்களைக் கடந்து எப்படிச் செல்கிறது?',
     },
     image: img('technology'),
-    minutes: 4,
+    minutes: minutesFor('how-wifi-passes-through-walls'),
   },
   {
     slug: 'why-we-have-leap-years',
     category: 'facts',
     title: { en: 'Why Do We Have Leap Years?', ta: 'லீப் ஆண்டு ஏன் வருகிறது?' },
     image: img('facts'),
-    minutes: 3,
+    minutes: minutesFor('why-we-have-leap-years'),
   },
 ];
 

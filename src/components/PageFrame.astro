@@ -1,0 +1,68 @@
+---
+// The frame around an inner page: header, main area, footer and the phone bar.
+// New kinds of page (articles, and later About, Contact …) put their content inside it.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from './SiteHeader.astro';
+import SiteFooter from './SiteFooter.astro';
+import BottomNav from './BottomNav.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Path after the language prefix, e.g. "articles/why-is-the-sky-blue/". */
+  path: string;
+  /** Which header link to highlight (a section key); none if it matches nothing. */
+  active?: string;
+  /** The languages this page exists in. */
+  available?: Lang[];
+  ogType?: 'website' | 'article';
+  published?: string;
+  /** Where a language pill should go when this page has no twin in that language. */
+  switchTo?: Partial<Record<Lang, string>>;
+}
+const { lang, title, description, path, active, available, ogType, published, switchTo } = Astro.props;
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  path={path}
+  canonical
+  available={available}
+  ogType={ogType}
+  published={published}
+>
+  <SiteHeader lang={lang} active={active} switchTo={switchTo} />
+
+  <main id="main" class="container page">
+    <slot />
+  </main>
+
+  <SiteFooter lang={lang} />
+  <BottomNav lang={lang} isHome={false} current={active} />
+</BaseLayout>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 16px;
+  }
+
+  /* Room for the phone bottom bar so it never covers the footer */
+  @media (max-width: 767px) {
+    :global(body) {
+      padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+    }
+  }
+  @media (min-width: 768px) {
+    .page {
+      gap: 28px;
+      padding-top: 22px;
+    }
+  }
+</style>

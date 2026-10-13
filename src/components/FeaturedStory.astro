@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { featured, categoryLabel } from '../data/home';
+import { articleHref } from '../data/articleFiles';
 import { type Lang, useTranslations, otherLang } from '../i18n/ui';
 
 interface Props {
@@ -10,7 +11,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const other = otherLang(lang);
 const a = featured;
-const href = `/${lang}/articles/${a.slug}/`;
+const href = articleHref(lang, a.slug);
 ---
 
 <article class="featured">
@@ -28,7 +29,6 @@ const href = `/${lang}/articles/${a.slug}/`;
     <div class="featured-meta">
       <span class="chip chip-gold">{t('featured.label')}</span>
       <span class="chip chip-glass">{categoryLabel[a.category][lang]}</span>
-      <span class="chip chip-glass">{t('sample')}</span>
     </div>
     <h2 class="featured-title">
       <a class="stretched" href={href}>{a.title[lang]}</a>

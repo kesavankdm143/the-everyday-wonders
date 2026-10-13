@@ -1,0 +1,90 @@
+---
+import Icon from './Icon.astro';
+import { topStories } from '../data/home';
+import { type Lang, useTranslations, otherLang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+---
+
+<aside class="panel top-stories" aria-labelledby="top-title">
+  <div class="section-head">
+    <h2 id="top-title">{t('topStories')}</h2>
+    <a class="view-all" href={`/${lang}/articles/`}>{t('viewAll')} <Icon name="arrow" size={15} /></a>
+  </div>
+  <ul>
+    {
+      topStories.map((a) => (
+        <li>
+          <a href={`/${lang}/articles/${a.slug}/`} class="story">
+            <img src={a.image} alt="" width="400" height="400" loading="lazy" decoding="async" />
+            <span class="story-text">
+              <span class="story-title">{a.title[lang]}</span>
+              <span class="story-sub" lang={other}>{a.title[other]}</span>
+            </span>
+            <Icon name="chevron" size={18} class="story-chev" />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="note"><span class="sample-tag">{t('sample')}</span></p>
+</aside>
+
+<style>
+  .top-stories ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .top-stories li + li {
+    border-top: 1px solid var(--line);
+  }
+  .story {
+    display: grid;
+    grid-template-columns: 92px 1fr 18px;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 0;
+  }
+  .story img {
+    width: 92px;
+    height: 66px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+  .story-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .story-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .story-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .story :global(.story-chev) {
+    color: #9aa5ba;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .story:hover .story-title {
+    color: var(--blue);
+  }
+  .story:hover :global(.story-chev) {
+    color: var(--blue);
+    transform: translateX(3px);
+  }
+  .note {
+    margin-top: 6px;
+  }
+</style>

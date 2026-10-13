@@ -1,0 +1,104 @@
+---
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const links = [
+  { key: 'footer.about', href: `/${lang}/about/` },
+  { key: 'footer.contact', href: `/${lang}/contact/` },
+  { key: 'footer.privacy', href: `/${lang}/privacy-policy/` },
+  { key: 'footer.disclaimer', href: `/${lang}/disclaimer/` },
+] as const;
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href={`/${lang}/`} class="brand">
+        <img src="/images/logo.svg" alt="" width="48" height="48" loading="lazy" />
+        <span>The Everyday <span class="gold">Wonders</span></span>
+      </a>
+      <p>{t('footer.blurb')}</p>
+    </div>
+    <nav aria-label={t('footer.about')}>
+      <ul class="links">
+        {links.map((l) => <li><a href={l.href}>{t(l.key)}</a></li>)}
+      </ul>
+    </nav>
+    <p class="finance-note">{t('footer.finance')}</p>
+  </div>
+  <div class="container copyright">
+    <p>© {year} The Everyday Wonders. {t('footer.rights')}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 40px;
+    background: var(--navy-950);
+    color: #c9d3e8;
+    border-top: 3px solid var(--gold);
+    font-size: 0.9rem;
+  }
+  .footer-grid {
+    display: grid;
+    gap: 24px;
+    padding-block: 32px 20px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .gold {
+    color: var(--gold-light);
+  }
+  .footer-brand p {
+    margin-top: 10px;
+    max-width: 380px;
+  }
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+  }
+  .links a {
+    color: #fff;
+  }
+  .links a:hover {
+    color: var(--gold-light);
+    text-decoration: underline;
+  }
+  .finance-note {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(242, 213, 138, 0.3);
+    background: rgba(242, 213, 138, 0.06);
+    font-size: 0.82rem;
+  }
+  .copyright {
+    padding-block: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.8rem;
+    color: #9aa7c0;
+  }
+
+  @media (min-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1.3fr 1fr 1.2fr;
+      align-items: start;
+      gap: 40px;
+    }
+  }
+</style>

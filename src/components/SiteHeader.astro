@@ -1,0 +1,421 @@
+---
+import Icon from './Icon.astro';
+import { type Lang, languages, useTranslations, otherLang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Which nav item is highlighted */
+  active?: string;
+  /** On the homepage the site name is the page's main heading (h1) */
+  isHome?: boolean;
+}
+
+const { lang, active = 'home', isHome = false } = Astro.props;
+const t = useTranslations(lang);
+
+// Same page in the other language: swap the /en/ or /ta/ prefix.
+const path = Astro.url.pathname;
+const swapTo = (target: Lang) => path.replace(/^\/(en|ta)(\/|$)/, `/${target}/`) || `/${target}/`;
+
+const navItems = [
+  { key: 'home', href: `/${lang}/` },
+  { key: 'science', href: `/${lang}/science/` },
+  { key: 'space', href: `/${lang}/space/` },
+  { key: 'technology', href: `/${lang}/technology/` },
+  { key: 'nature', href: `/${lang}/nature/` },
+  { key: 'human-body', href: `/${lang}/human-body/` },
+  { key: 'facts', href: `/${lang}/facts/` },
+  { key: 'markets', href: `/${lang}/markets/` },
+  { key: 'business', href: `/${lang}/business/` },
+] as const;
+
+const BrandTag = isHome ? 'h1' : 'p';
+const langOrder: Lang[] = ['ta', 'en'];
+---
+
+<header class="site-header" data-header>
+  <img class="satellite" src="/images/art/satellite.svg" alt="" width="160" height="80" />
+  <div class="container header-top">
+    <a class="brand" href={`/${lang}/`}>
+      <img class="brand-logo" src="/images/logo.svg" alt="" width="64" height="64" />
+      <span class="brand-text">
+        <BrandTag class="brand-name">
+          <span class="the">{t('site.name.the')}</span>{' '}{t('site.name.everyday')}{' '}<span class="gold"
+            >{t('site.name.wonders')}</span
+          >
+        </BrandTag>
+        <span class="tagline">{t('site.tagline')}</span>
+      </span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      data-menu-toggle
+      data-label-open={t('menu.open')}
+      data-label-close={t('menu.close')}
+    >
+      <span class="icon-open"><Icon name="menu" size={26} /></span>
+      <span class="icon-close"><Icon name="close" size={26} /></span>
+      <span class="visually-hidden" data-menu-label>{t('menu.open')}</span>
+    </button>
+
+    <div class="header-tools">
+      <nav class="lang-switch" aria-label={t('lang.label')}>
+        {
+          langOrder.map((code) => (
+            <a
+              href={code === lang ? path : swapTo(code)}
+              lang={code}
+              hreflang={code}
+              class:list={['lang-pill', { active: code === lang }]}
+              aria-current={code === lang ? 'true' : undefined}
+            >
+              {languages[code]}
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- Search is a placeholder until the search step; the box is disabled for now -->
+      <form class="search" role="search">
+        <label class="visually-hidden" for="site-search">{t('search.label')}</label>
+        <input id="site-search" type="search" placeholder={t('search.placeholder')} disabled />
+        <span class="search-icon"><Icon name="search" size={20} /></span>
+      </form>
+    </div>
+  </div>
+
+  <nav id="primary-nav" class="primary-nav" aria-label={t('nav.label')}>
+    <div class="container">
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={{ active: item.key === active }}
+                aria-current={item.key === active ? 'page' : undefined}
+              >
+                <Icon name={item.key} size={19} />
+                <span>{t(`nav.${item.key}`)}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Mobile menu: open/close the section list. Desktop always shows it.
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const label = document.querySelector<HTMLElement>('[data-menu-label]');
+  if (header && toggle && label) {
+    header.classList.add('js-ready');
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? toggle.dataset.labelClose! : toggle.dataset.labelOpen!;
+    };
+    toggle.addEventListener('click', () => setOpen(!header.classList.contains('menu-open')));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('menu-open')) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    // Lets the bottom navigation's "Menu" button open this menu.
+    window.addEventListener('ew:open-menu', () => {
+      window.scrollTo({ top: 0 });
+      setOpen(true);
+      header.querySelector<HTMLAnchorElement>('.primary-nav a')?.focus({ preventScroll: true });
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    position: relative;
+    color: #fff;
+    background-color: var(--navy-900);
+    background-image: url('/images/art/header-space.svg');
+    background-size: cover;
+    background-position: right center;
+  }
+
+  /* Decorative satellite — only on wide screens, where there is empty space for it */
+  .satellite {
+    display: none;
+    position: absolute;
+    top: 26px;
+    left: 54%;
+    width: 120px;
+    height: auto;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+  @media (min-width: 1280px) {
+    .satellite {
+      display: block;
+    }
+  }
+
+  .header-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 14px 16px;
+    padding-block: 14px 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .brand-logo {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 10px rgba(242, 213, 138, 0.35));
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .brand-name {
+    font-size: 1.32rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .brand-name .the {
+    font-size: 0.62em;
+    font-weight: 600;
+    color: #c9d3e8;
+    margin-right: 2px;
+    vertical-align: 0.18em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .brand-name .gold {
+    color: var(--gold-light);
+  }
+  .tagline {
+    margin-top: 3px;
+    font-size: 0.72rem;
+    color: #c9d3e8;
+    line-height: 1.35;
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    cursor: pointer;
+  }
+  .menu-toggle .icon-close,
+  .menu-open .menu-toggle .icon-open {
+    display: none;
+  }
+  .menu-open .menu-toggle .icon-close {
+    display: block;
+  }
+
+  .header-tools {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lang-switch {
+    display: flex;
+    gap: 8px;
+  }
+  .lang-pill {
+    min-width: 96px;
+    padding: 7px 18px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(242, 213, 138, 0.55);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.4;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .lang-pill:hover {
+    background: rgba(242, 213, 138, 0.14);
+  }
+  .lang-pill.active {
+    background: linear-gradient(180deg, var(--gold-light), var(--gold));
+    border-color: var(--gold-light);
+    color: var(--navy-950);
+  }
+
+  .search {
+    position: relative;
+    width: 100%;
+  }
+  .search input {
+    width: 100%;
+    height: 46px;
+    padding: 0 46px 0 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: #fff;
+    color: var(--ink);
+    font-size: 0.92rem;
+  }
+  .search input:disabled {
+    cursor: not-allowed;
+    opacity: 1;
+  }
+  .search input::placeholder {
+    color: #6b768c;
+  }
+  .search-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--navy-800);
+  }
+
+  /* ----- Section navigation ----- */
+  .primary-nav {
+    background: rgba(5, 11, 29, 0.78);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+  }
+  .primary-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .primary-nav a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #e4e9f5;
+    white-space: nowrap;
+  }
+  .primary-nav a :global(svg) {
+    color: var(--gold-light);
+    flex-shrink: 0;
+  }
+  .primary-nav a:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .primary-nav a.active {
+    color: var(--gold-light);
+    background: rgba(217, 180, 90, 0.14);
+    font-weight: 600;
+  }
+
+  /* With JavaScript running, the mobile menu starts closed */
+  .js-ready .primary-nav {
+    display: none;
+  }
+  .js-ready.menu-open .primary-nav {
+    display: block;
+  }
+
+  /* ----- Tablet and up ----- */
+  @media (min-width: 768px) {
+    .header-top {
+      grid-template-columns: 1fr auto;
+      padding-block: 20px;
+    }
+    .menu-toggle {
+      display: none;
+    }
+    .header-tools {
+      grid-column: auto;
+      align-items: flex-end;
+      gap: 12px;
+    }
+    .search {
+      width: 320px;
+    }
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+    }
+    .brand {
+      gap: 14px;
+    }
+    .brand-name {
+      font-size: 2rem;
+    }
+    .tagline {
+      font-size: 0.92rem;
+    }
+
+    .js-ready .primary-nav,
+    .primary-nav {
+      display: block;
+    }
+    /* Items wrap onto a second line instead of being hidden when space runs out */
+    .primary-nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 2px;
+      padding: 0;
+    }
+    .primary-nav a {
+      gap: 7px;
+      padding: 13px 9px;
+      border-radius: 0;
+      font-size: 0.85rem;
+      border-bottom: 3px solid transparent;
+    }
+    .primary-nav a:lang(ta),
+    :global(:lang(ta)) .primary-nav a {
+      font-size: 0.84rem;
+      padding-inline: 10px;
+    }
+    .primary-nav a.active {
+      border-bottom-color: var(--gold);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .brand-name {
+      font-size: 2.35rem;
+    }
+    .search {
+      width: 380px;
+    }
+    .primary-nav a {
+      padding-inline: 15px;
+      font-size: 0.95rem;
+    }
+    :global(:lang(ta)) .primary-nav a {
+      padding-inline: 12px;
+      font-size: 0.88rem;
+    }
+  }
+</style>

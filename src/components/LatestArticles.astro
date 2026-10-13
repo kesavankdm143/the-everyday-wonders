@@ -1,0 +1,132 @@
+---
+import Icon from './Icon.astro';
+import { latestArticles, categoryLabel } from '../data/home';
+import { type Lang, useTranslations, otherLang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const other = otherLang(lang);
+---
+
+<section class="panel" id="latest" aria-labelledby="latest-title">
+  <div class="section-head">
+    <h2 id="latest-title">{t('latest.title')}</h2>
+    <a class="view-all" href={`/${lang}/articles/`}>{t('viewAll')} <Icon name="arrow" size={15} /></a>
+  </div>
+  <ul class="grid">
+    {
+      latestArticles.map((a) => (
+        <li>
+          <article class="card">
+            <img src={a.image} alt="" width="400" height="400" loading="lazy" decoding="async" />
+            <div class="card-body">
+              <span class="cat">{categoryLabel[a.category][lang]}</span>
+              <h3>
+                <a class="stretched" href={`/${lang}/articles/${a.slug}/`}>{a.title[lang]}</a>
+              </h3>
+              <p class="sub" lang={other}>{a.title[other]}</p>
+              <p class="meta">
+                <span class="sample-tag">{t('sample')}</span>
+                <span class="time"><Icon name="clock" size={14} /> {a.minutes} {t('minRead')}</span>
+              </p>
+            </div>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    gap: 14px;
+    align-items: start;
+    height: 100%;
+    border-radius: var(--radius);
+    transition: transform 0.25s;
+  }
+  .card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .cat {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--gold-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .card:hover h3 {
+    color: var(--blue);
+  }
+  .sub {
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding-bottom: 4px;
+    }
+    .card img {
+      aspect-ratio: 16 / 9;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+  }
+  @media (min-width: 1100px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+    h3 {
+      font-size: 1.05rem;
+    }
+  }
+</style>

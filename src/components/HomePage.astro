@@ -1,0 +1,107 @@
+---
+// The full homepage. /en/ and /ta/ both use this, so the design stays identical
+// and only the language changes.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from './SiteHeader.astro';
+import MarketStrip from './MarketStrip.astro';
+import FeaturedStory from './FeaturedStory.astro';
+import TopStories from './TopStories.astro';
+import CategoryCards from './CategoryCards.astro';
+import MarketAnalysis from './MarketAnalysis.astro';
+import LatestArticles from './LatestArticles.astro';
+import FinanceTopics from './FinanceTopics.astro';
+import SiteFooter from './SiteFooter.astro';
+import BottomNav from './BottomNav.astro';
+import Icon from './Icon.astro';
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const title =
+  lang === 'ta'
+    ? 'The Everyday Wonders — அறிவியல், விண்வெளி, தொழில்நுட்பம், நிதி'
+    : 'The Everyday Wonders — Science, Space, Technology & Finance Explained';
+---
+
+<BaseLayout lang={lang} title={title} description={t('site.description')}>
+  <SiteHeader lang={lang} active="home" isHome />
+
+  <main id="main" class="container home">
+    <p class="preview-note" role="note">
+      <Icon name="info" size={18} />
+      <span>{t('preview.note')}</span>
+    </p>
+
+    <MarketStrip lang={lang} />
+
+    <div class="row row-hero">
+      <FeaturedStory lang={lang} />
+      <TopStories lang={lang} />
+    </div>
+
+    <div class="row row-cats">
+      <CategoryCards lang={lang} />
+      <MarketAnalysis lang={lang} />
+    </div>
+
+    <LatestArticles lang={lang} />
+
+    <FinanceTopics lang={lang} />
+  </main>
+
+  <SiteFooter lang={lang} />
+  <BottomNav lang={lang} />
+</BaseLayout>
+
+<style>
+  .home {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 16px;
+  }
+  .preview-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: #fff8e2;
+    border: 1px solid #f0dc9e;
+    color: #5e4710;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  .preview-note :global(svg) {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .row {
+    display: grid;
+    gap: 22px;
+  }
+
+  /* Room for the phone bottom bar so it never covers the footer */
+  @media (max-width: 767px) {
+    :global(body) {
+      padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (min-width: 768px) {
+    .home {
+      gap: 28px;
+      padding-top: 22px;
+    }
+  }
+  @media (min-width: 1100px) {
+    .row-hero,
+    .row-cats {
+      grid-template-columns: minmax(0, 1fr) 380px;
+      align-items: stretch;
+    }
+  }
+</style>

@@ -1,0 +1,114 @@
+---
+import Icon from './Icon.astro';
+import { financeTopics } from '../data/home';
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section aria-labelledby="finance-title">
+  <div class="section-head">
+    <h2 id="finance-title">{t('finance.title')}</h2>
+    <a class="view-all" href={`/${lang}/markets/`}>{t('viewAll')} <Icon name="arrow" size={15} /></a>
+  </div>
+  <ul class="topics">
+    {
+      financeTopics.map((f) => (
+        <li>
+          <article class="topic">
+            <div class="topic-head">
+              <h3>
+                <a class="stretched" href={`/${lang}/markets/${f.slug}/`}>{f.title[lang]}</a>
+              </h3>
+              <Icon name="arrow" size={18} class="topic-arrow" />
+            </div>
+            <img src={f.image} alt="" width="400" height="400" loading="lazy" decoding="async" />
+            <p>{f.desc[lang]}</p>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .topics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .topic {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    padding: 14px;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .topic:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+  }
+  .topic-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .topic :global(.topic-arrow) {
+    flex-shrink: 0;
+    color: #9aa5ba;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .topic:hover :global(.topic-arrow) {
+    color: var(--blue);
+    transform: translateX(3px);
+  }
+  img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+  p {
+    display: none;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  @media (min-width: 720px) {
+    .topics {
+      gap: 18px;
+    }
+    .topic {
+      padding: 16px;
+    }
+    h3 {
+      font-size: 1.05rem;
+    }
+    p {
+      display: block;
+    }
+  }
+  @media (min-width: 1100px) {
+    .topics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

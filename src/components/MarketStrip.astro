@@ -1,0 +1,195 @@
+---
+// Horizontal market snapshot. Uses SAMPLE figures from src/data/home.ts —
+// labelled on screen as "Sample data · not live".
+import Icon from './Icon.astro';
+import { sampleMarkets, type MarketItem } from '../data/home';
+import { type Lang, useTranslations } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Turn a list of numbers into a tiny line chart (64 × 26 box).
+function sparkPoints(values: number[]) {
+  const w = 64, h = 26, pad = 2;
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = max - min || 1;
+  return values
+    .map((v, i) => {
+      const x = pad + (i / (values.length - 1)) * (w - pad * 2);
+      const y = pad + (1 - (v - min) / range) * (h - pad * 2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(' ');
+}
+
+// Small coloured symbol for each market.
+const symbols: Record<MarketItem['icon'], string> = {
+  index:
+    '<rect x="3" y="14" width="4" height="7" rx="1" fill="#22a35a"/><rect x="10" y="9" width="4" height="12" rx="1" fill="#2d8cff"/><rect x="17" y="4" width="4" height="17" rx="1" fill="#f0a020"/>',
+  gold:
+    '<path d="M2 20l2.5-6h7L14 20z" fill="#e3ab2c"/><path d="M10 20l2.5-6h7L22 20z" fill="#c9911c"/><path d="M6 13l2.5-6h7L18 13z" fill="#f5c84c"/>',
+  silver:
+    '<path d="M2 20l2.5-6h7L14 20z" fill="#b6bfcc"/><path d="M10 20l2.5-6h7L22 20z" fill="#98a3b3"/><path d="M6 13l2.5-6h7L18 13z" fill="#d9dee7"/>',
+  oil: '<rect x="5" y="3" width="14" height="18" rx="3" fill="#1f2937"/><path d="M5 8h14M5 16h14" stroke="#9aa3b2" stroke-width="1.6"/><path d="M12 10.5c-1.2 1.5-1.8 2.4-1.8 3.1a1.8 1.8 0 0 0 3.6 0c0-.7-.6-1.6-1.8-3.1z" fill="#f5c84c"/>',
+  copper:
+    '<ellipse cx="12" cy="15" rx="9" ry="4" fill="none" stroke="#c8662c" stroke-width="2.2"/><ellipse cx="12" cy="12" rx="7" ry="3" fill="none" stroke="#e08a4a" stroke-width="2.2"/><ellipse cx="12" cy="9" rx="5" ry="2.2" fill="none" stroke="#f0a86a" stroke-width="2.2"/>',
+  bitcoin:
+    '<circle cx="12" cy="12" r="10" fill="#f7931a"/><path d="M9.5 7.5h3.6c1.6 0 2.5.8 2.5 2 0 .9-.5 1.5-1.3 1.7 1 .2 1.7 1 1.7 2 0 1.5-1.1 2.3-2.8 2.3H9.5zM11.4 9.2v2h1.5c.7 0 1-.4 1-1s-.4-1-1-1zm0 3.5v2.1h1.8c.7 0 1.1-.4 1.1-1.1 0-.6-.4-1-1.1-1z" fill="#fff"/><path d="M11 6v1.6M13 6v1.6M11 16.4V18M13 16.4V18" stroke="#fff" stroke-width="1.3"/>',
+};
+---
+
+<section class="markets" id="markets" aria-labelledby="markets-title">
+  <div class="markets-head">
+    <h2 id="markets-title">{t('markets.title')}</h2>
+    <span class="chip badge"><Icon name="info" size={14} />{t('markets.badge')}</span>
+  </div>
+  <ul class="market-list">
+    {
+      sampleMarkets.map((m) => (
+        <li class="mk">
+          <div class="mk-top">
+            <span class="mk-name">{m.name[lang]}</span>
+            <span class="sample-tag">{t('markets.sample')}</span>
+          </div>
+          <div class="mk-mid">
+            <p class="mk-value">
+              {m.value}
+              {m.unit && <span class="mk-unit">{m.unit}</span>}
+            </p>
+            <svg class="mk-symbol" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" set:html={symbols[m.icon]} />
+          </div>
+          <span class:list={['mk-change', m.up ? 'up' : 'down']}>
+            <span aria-hidden="true">{m.up ? '▲' : '▼'}</span> {m.change}
+          </span>
+          <svg class="mk-spark" viewBox="0 0 64 26" preserveAspectRatio="none" aria-hidden="true">
+            <polyline
+              points={sparkPoints(m.spark)}
+              fill="none"
+              stroke={m.up ? '#16a34a' : '#dc2626'}
+              stroke-width="1.8"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .markets-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-bottom: 10px;
+  }
+  .markets-head h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .badge {
+    background: #fff4d6;
+    color: var(--gold-ink);
+    border: 1px solid #f0dc9e;
+  }
+
+  .market-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .mk {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 11px 12px 8px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    min-width: 0;
+  }
+  .mk:last-child {
+    grid-column: 1 / -1;
+  }
+  .mk-top,
+  .mk-mid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .mk-mid {
+    align-items: center;
+  }
+  .mk-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    line-height: 1.3;
+    min-width: 0;
+  }
+  .mk-top .sample-tag {
+    flex-shrink: 0;
+    font-size: 0.6rem;
+    padding: 0 6px;
+  }
+  .mk-symbol {
+    flex-shrink: 0;
+  }
+  .mk-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .mk-unit {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 2px;
+  }
+  .mk-change {
+    font-size: 0.74rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .mk-change.up {
+    color: var(--green);
+  }
+  .mk-change.down {
+    color: var(--red);
+  }
+  .mk-spark {
+    width: 100%;
+    height: 22px;
+    margin-top: 4px;
+  }
+
+  @media (min-width: 720px) {
+    .market-list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .mk:last-child {
+      grid-column: auto;
+    }
+  }
+  @media (min-width: 1200px) {
+    .market-list {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+    .mk-value {
+      font-size: 1.05rem;
+    }
+  }
+</style>

@@ -62,6 +62,18 @@ const a = marketAnalysis;
     font-size: 0.85rem;
     color: var(--muted);
   }
+  /* A long unbroken word (common in Tamil) wraps instead of widening the page */
+  h3,
+  .sub,
+  .summary {
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 359px) {
+    .analysis-card {
+      grid-template-columns: 88px 1fr;
+      gap: 12px;
+    }
+  }
   .summary {
     display: none;
     font-size: 0.86rem;
@@ -78,6 +90,7 @@ const a = marketAnalysis;
     color: #fff;
     font-size: 0.86rem;
     font-weight: 600;
+    max-width: 100%;
   }
   .analysis-card:hover .btn-green {
     background: #0b6236;

@@ -33,7 +33,13 @@ const isMarkets = section === 'markets';
 const title = `${categoryLabel[section][lang]} — The Everyday Wonders`;
 ---
 
-<BaseLayout lang={lang} title={title} description={sections[section].description[lang]} path={`${section}/`}>
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={sections[section].description[lang]}
+  path={`${section}/`}
+  canonical
+>
   <SiteHeader lang={lang} active={section} />
 
   <main id="main" class="container page">
